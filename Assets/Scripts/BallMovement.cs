@@ -4,20 +4,36 @@ using UnityEngine;
 
 public class BallMovement : MonoBehaviour
 {
-    public float speed = 5f;
-    // Start is called before the first frame update
+    [SerializeField] private float ballVelocity = 500f;
+
+    public Rigidbody rigidbody;
+    public float zRange = 20;
+    public float maxVelocity = 100f;
+
+    private void Awake()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
+
     void Start()
     {
         float sx = Random.Range(0, 2) == 0 ? -1 : 1;
         float sz = Random.Range(0, 2) == 0 ? -1 : 1;
 
-        GetComponent<Rigidbody>().velocity = new Vector3(speed * sx, speed * sz, 0);
+        rigidbody.AddForce(ballVelocity * sx, ballVelocity * sz, 0, ForceMode.Force);
     }
-
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        if (rigidbody.velocity.sqrMagnitude > maxVelocity)
+        {
+            //smoothness of the slowdown is controlled by the 0.99f, 
+            //0.5f is less smooth, 0.9999f is more smooth
+            rigidbody.velocity *= 0.99f;
+        }
     }
-  
+    
+    private void OnCollisionEnter(Collision collision)
+    {
+        rigidbody.AddForce(collision.contacts[0].normal * ballVelocity, ForceMode.Force);
+    }
 }
