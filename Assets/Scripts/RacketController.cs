@@ -4,20 +4,19 @@ using UnityEngine;
 
 public class RacketController : MonoBehaviour
 {
-    public Rigidbody rb;
+    public Rigidbody PaddleRb;
     public float forceStrength = 20;
     public bool isPlayer1;
     public float zRange = 20;
     public float xRange = 40;
 
     float forceControl;
-    // Start is called before the first frame update
+
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        PaddleRb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (isPlayer1)
@@ -29,16 +28,15 @@ public class RacketController : MonoBehaviour
             forceControl = Input.GetAxis("Vertical2");
         }
 
-
         // Not letting rackets go beyond table edges
         if (transform.position.z < -zRange || transform.position.z > zRange || transform.position.x < -xRange || transform.position.x > xRange)
         {
-            rb.velocity = Vector3.zero;
+            PaddleRb.velocity = Vector3.zero;
         }
     }
 
     private void FixedUpdate()
     {
-        rb.AddForce(Vector3.forward * forceControl * forceStrength);
-    }
+        PaddleRb.AddForce(Vector3.forward * forceControl * forceStrength);
+    } 
 }
